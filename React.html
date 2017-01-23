@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Practice</title>
+  </head>
+  <body>
+  
+    <div id="greeting-div"></div>
+
+    <script src="https://fb.me/react-15.0.0.js"></script>
+    <script src="https://fb.me/react-dom-15.0.0.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/babel-core/5.8.34/browser.min.js"></script>
+	
+    <script type="text/babel">
+	
+      var Greeting = React.createClass({
+    getInitialState: function() {
+        return { name: 'hello world'};
+    },
+	changeHandler: function(e){
+	this.setState({name: e.target.value });
+	},
+
+        render: function() {
+          return ( <div>
+		  <div>{this.state.name}</div>
+            <textarea value={this.state.name} name="myText" onChange={this.changeHandler.bind(this)}/>
+			</div>
+          )
+        }
+      });
+
+      ReactDOM.render(
+        <Greeting/>,
+        document.getElementById('greeting-div')
+      );
+    </script>
+  </body>
+</html>
