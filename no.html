@@ -1,0 +1,166 @@
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <title>Practice</title>
+	<style>
+	#pwd:focus{
+	border:none !important;
+	}
+	#pwd{
+	border:none !important;
+    box-shadow: 0px 0px 0px 1px gray;	
+	}
+	.red{
+	box-shadow: 0px 0px 0px 1px red !important;
+	}
+	.green{
+	box-shadow: 0px 0px 0px 1px green  !important;
+	}
+	.lightGreen{
+	box-shadow: 0px 0px 0px 1px lightgreen  !important;
+	}
+	.blue{
+	box-shadow: 0px 0px 0px 1px blue  !important;
+	}	
+	</style>
+  </head>
+  <body>
+  
+    <div id="greeting-div"></div>
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.1.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.3.7/js/bootstrap.min.js"></script>
+</head>
+<body>
+<div class="container">
+  <form>
+    <div class="form-group">
+      <label for="pwd">Password:</label>
+      <input type="password" class="form-control" id="pwd" placeholder="Enter password">
+    </div>
+  </form>
+ </div> 
+
+    <script >
+var strPassword;
+var charPassword;
+var complexity = $("#complexity");
+var minPasswordLength = 8;
+var baseScore = 0, score = 0;
+ 
+var num = {};
+num.Excess = 0;
+num.Upper = 0;
+num.Numbers = 0;
+num.Symbols = 0;
+ 
+var bonus = {};
+bonus.Excess = 3;
+bonus.Upper = 4;
+bonus.Numbers = 5;
+bonus.Symbols = 5;
+bonus.Combo = 0; 
+bonus.FlatLower = 0;
+bonus.FlatNumber = 0;
+
+$("#pwd").on('keydown',function(){
+	checkVal();
+});
+
+function checkVal()
+{  charPassword = $('#pwd').val();
+    if (charPassword.length >= minPasswordLength)
+    {
+        baseScore = 50; 
+        analyzeString();    
+        calcComplexity();       
+    }
+    else
+    {
+        baseScore = 0;
+    }
+     
+    outputResult();
+}
+
+
+function analyzeString ()
+{   
+    for (i=0; i<charPassword.length;i++)
+    {
+        if (charPassword[i].match(/[A-Z]/g)) {num.Upper++;}
+        if (charPassword[i].match(/[0-9]/g)) {num.Numbers++;}
+        if (charPassword[i].match(/(.*[!,@,#,$,%,^,&,*,?,_,~])/)) {num.Symbols++;} 
+    }
+     
+    num.Excess = charPassword.length - minPasswordLength;
+     
+    if (num.Upper && num.Numbers && num.Symbols)
+    {
+        bonus.Combo = 25; 
+    }
+ 
+    else if ((num.Upper && num.Numbers) || (num.Upper && num.Symbols) || (num.Numbers && num.Symbols))
+    {
+        bonus.Combo = 15; 
+    }
+     
+	 strPassword = $('#pwd').val();
+	 
+    if (strPassword.match(/^[\sa-z]+$/))
+    { 
+        bonus.FlatLower = -15;
+    }
+     
+    if (strPassword.match(/^[\s0-9]+$/))
+    { 
+        bonus.FlatNumber = -35;
+    }
+}
+
+
+
+function calcComplexity()
+{
+    score = baseScore + (num.Excess*bonus.Excess) + (num.Upper*bonus.Upper) + (num.Numbers*bonus.Numbers) + 
+(num.Symbols*bonus.Symbols) + bonus.Combo + bonus.FlatLower + bonus.FlatNumber; 
+}
+
+
+
+function outputResult()
+{
+$('#pwd').removeClass('red');
+$('#pwd').removeClass('lightGreen');
+$('#pwd').removeClass('green');
+$('#pwd').removeClass('blue');
+    if ($("#pwd").val()== "")
+    { 
+        //complexity.html("Enter a random value").addClass("default");
+		$('#pwd').addClass('red');
+    }
+    else if (charPassword.length < minPasswordLength)
+    {	$('#pwd').addClass('red');
+       // complexity.html("At least " + minPasswordLength+ " characters please!").addClass("weak");
+    }
+    else if (score<50)
+    {	$('#pwd').addClass('red');
+       // complexity.html("Weak!").addClass("weak");
+    }
+    else if (score>=50 && score<75)
+    {	$('#pwd').addClass('lightGreen');
+       // complexity.html("Average!").addClass("strong");
+    }
+    else if (score>=75 && score<100)
+    {	$('#pwd').addClass('green');
+       // complexity.html("Strong!").addClass("stronger");
+    }
+    else if (score>=100)
+    {	$('#pwd').addClass('blue');
+        //complexity.html("Secure!").addClass("strongest");
+    }
+}
+
+    </script>
+  </body>
+</html>
